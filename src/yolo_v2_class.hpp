@@ -59,8 +59,8 @@ public:
 	YOLODLL_API int get_net_height() const;
 	YOLODLL_API int get_net_color_depth() const;
 
-	YOLODLL_API std::vector<bbox_t> tracking_id(std::vector<bbox_t> cur_bbox_vec, bool const change_history = true, 
-												int const frames_story = 10, int const max_dist = 150);
+	YOLODLL_API std::vector<bbox_t> tracking_id(std::vector<bbox_t> cur_bbox_vec, bool const change_history = true,
+		int const frames_story = 10, int const max_dist = 150);
 
 	std::vector<bbox_t> detect_resized(image_t img, int init_w, int init_h, float thresh = 0.2, bool use_mean = false)
 	{
@@ -75,7 +75,7 @@ public:
 #ifdef OPENCV
 	std::vector<bbox_t> detect(cv::Mat mat, float thresh = 0.2, bool use_mean = false)
 	{
-		if(mat.data == NULL)
+		if (mat.data == NULL)
 			throw std::runtime_error("Image is empty");
 		auto image_ptr = mat_to_image_resize(mat);
 		return detect_resized(*image_ptr, mat.cols, mat.rows, thresh, use_mean);
@@ -161,8 +161,8 @@ public:
 
 
 	Tracker_optflow(int _gpu_id = 0, int win_size = 9, int max_level = 3, int iterations = 8000, int _flow_error = -1) :
-		gpu_count(cv::cuda::getCudaEnabledDeviceCount()), gpu_id(std::min(_gpu_id, gpu_count-1)),
-		flow_error((_flow_error > 0)? _flow_error:(win_size*4))
+		gpu_count(cv::cuda::getCudaEnabledDeviceCount()), gpu_id(std::min(_gpu_id, gpu_count - 1)),
+		flow_error((_flow_error > 0) ? _flow_error : (win_size * 4))
 	{
 		int const old_gpu_id = cv::cuda::getDevice();
 		cv::cuda::setDevice(gpu_id);
@@ -251,7 +251,7 @@ public:
 		}
 
 		int const old_gpu_id = cv::cuda::getDevice();
-		if(old_gpu_id != gpu_id)
+		if (old_gpu_id != gpu_id)
 			cv::cuda::setDevice(gpu_id);
 
 		if (dst_mat_gpu.cols == 0) {
@@ -286,7 +286,7 @@ public:
 
 		std::vector<bbox_t> result_bbox_vec;
 
-		if (err_cpu.cols == cur_bbox_vec.size() && status_cpu.cols == cur_bbox_vec.size()) 
+		if (err_cpu.cols == cur_bbox_vec.size() && status_cpu.cols == cur_bbox_vec.size())
 		{
 			for (size_t i = 0; i < cur_bbox_vec.size(); ++i)
 			{
@@ -333,7 +333,7 @@ public:
 
 
 	Tracker_optflow(int win_size = 9, int max_level = 3, int iterations = 8000, int _flow_error = -1) :
-		flow_error((_flow_error > 0)? _flow_error:(win_size*4))
+		flow_error((_flow_error > 0) ? _flow_error : (win_size * 4))
 	{
 		sync_PyrLKOpticalFlow = cv::SparsePyrLKOpticalFlow::create();
 		sync_PyrLKOpticalFlow->setWinSize(cv::Size(win_size, win_size));	// 9, 15, 21, 31
@@ -594,14 +594,14 @@ public:
 #endif	// __cplusplus
 
 /*
-	// C - wrappers
-	YOLODLL_API void create_detector(char const* cfg_filename, char const* weight_filename, int gpu_id);
-	YOLODLL_API void delete_detector();
-	YOLODLL_API bbox_t* detect_custom(image_t img, float thresh, bool use_mean, int *result_size);
-	YOLODLL_API bbox_t* detect_resized(image_t img, int init_w, int init_h, float thresh, bool use_mean, int *result_size);
-	YOLODLL_API bbox_t* detect(image_t img, int *result_size);
-	YOLODLL_API image_t load_img(char *image_filename);
-	YOLODLL_API void free_img(image_t m);
+// C - wrappers
+YOLODLL_API void create_detector(char const* cfg_filename, char const* weight_filename, int gpu_id);
+YOLODLL_API void delete_detector();
+YOLODLL_API bbox_t* detect_custom(image_t img, float thresh, bool use_mean, int *result_size);
+YOLODLL_API bbox_t* detect_resized(image_t img, int init_w, int init_h, float thresh, bool use_mean, int *result_size);
+YOLODLL_API bbox_t* detect(image_t img, int *result_size);
+YOLODLL_API image_t load_img(char *image_filename);
+YOLODLL_API void free_img(image_t m);
 
 #ifdef __cplusplus
 }	// extern "C"
@@ -610,32 +610,32 @@ static std::shared_ptr<void> c_detector_ptr;
 static std::vector<bbox_t> c_result_vec;
 
 void create_detector(char const* cfg_filename, char const* weight_filename, int gpu_id) {
-	c_detector_ptr = std::make_shared<YOLODLL_API Detector>(cfg_filename, weight_filename, gpu_id);
+c_detector_ptr = std::make_shared<YOLODLL_API Detector>(cfg_filename, weight_filename, gpu_id);
 }
 
 void delete_detector() { c_detector_ptr.reset(); }
 
 bbox_t* detect_custom(image_t img, float thresh, bool use_mean, int *result_size) {
-	c_result_vec = static_cast<Detector*>(c_detector_ptr.get())->detect(img, thresh, use_mean);
-	*result_size = c_result_vec.size();
-	return c_result_vec.data();
+c_result_vec = static_cast<Detector*>(c_detector_ptr.get())->detect(img, thresh, use_mean);
+*result_size = c_result_vec.size();
+return c_result_vec.data();
 }
 
 bbox_t* detect_resized(image_t img, int init_w, int init_h, float thresh, bool use_mean, int *result_size) {
-	c_result_vec = static_cast<Detector*>(c_detector_ptr.get())->detect_resized(img, init_w, init_h, thresh, use_mean);
-	*result_size = c_result_vec.size();
-	return c_result_vec.data();
+c_result_vec = static_cast<Detector*>(c_detector_ptr.get())->detect_resized(img, init_w, init_h, thresh, use_mean);
+*result_size = c_result_vec.size();
+return c_result_vec.data();
 }
 
 bbox_t* detect(image_t img, int *result_size) {
-	return detect_custom(img, 0.24, true, result_size);
+return detect_custom(img, 0.24, true, result_size);
 }
 
 image_t load_img(char *image_filename) {
-	return static_cast<Detector*>(c_detector_ptr.get())->load_image(image_filename);
+return static_cast<Detector*>(c_detector_ptr.get())->load_image(image_filename);
 }
 void free_img(image_t m) {
-	static_cast<Detector*>(c_detector_ptr.get())->free_image(m);
+static_cast<Detector*>(c_detector_ptr.get())->free_image(m);
 }
 
 #endif	// __cplusplus
