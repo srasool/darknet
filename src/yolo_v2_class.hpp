@@ -32,12 +32,7 @@ struct image_t {
 	float *data;				// pointer to the image data
 };
 
-
-
 class Detector {
-
-
-
 	std::shared_ptr<void> detector_gpu_ptr;
 public:
 	float nms = .4;
