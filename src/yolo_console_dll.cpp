@@ -181,7 +181,7 @@ public:
 void draw_boxes(cv::Mat mat_img, std::vector<bbox_t> result_vec, std::vector<std::string> obj_names, 
 	int current_det_fps = -1, int current_cap_fps = -1)
 {
-	int const colors[6][3] = { { 1,0,1 },{ 0,0,1 },{ 0,1,1 },{ 0,1,0 },{ 1,1,0 },{ 1,0,0 } };
+/*	int const colors[6][3] = { { 1,0,1 },{ 0,0,1 },{ 0,1,1 },{ 0,1,0 },{ 1,1,0 },{ 1,0,0 } };
 
 	for (auto &i : result_vec) {
 		cv::Scalar color = obj_id_to_color(i.obj_id);
@@ -200,7 +200,7 @@ void draw_boxes(cv::Mat mat_img, std::vector<bbox_t> result_vec, std::vector<std
 	if (current_det_fps >= 0 && current_cap_fps >= 0) {
 		std::string fps_str = "FPS detection: " + std::to_string(current_det_fps) + "   FPS capture: " + std::to_string(current_cap_fps);
 		putText(mat_img, fps_str, cv::Point2f(10, 20), cv::FONT_HERSHEY_COMPLEX_SMALL, 1.2, cv::Scalar(50, 255, 0), 2);
-	}
+	}*/
 }
 #endif	// OPENCV
 
@@ -226,7 +226,7 @@ std::vector<std::string> objects_names_from_file(std::string const filename) {
 
 int main(int argc, char *argv[])
 {
-	std::string  names_file = "data/coco.names";
+	/*std::string  names_file = "data/coco.names";
 	std::string  cfg_file = "cfg/yolov3.cfg";
 	std::string  weights_file = "yolov3.weights";
 	std::string filename;
@@ -482,7 +482,7 @@ int main(int argc, char *argv[])
 		catch (std::exception &e) { std::cerr << "exception: " << e.what() << "\n"; getchar(); }
 		catch (...) { std::cerr << "unknown exception \n"; getchar(); }
 		filename.clear();
-	}
+	}*/
 
 	return 0;
 }
