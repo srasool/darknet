@@ -65,23 +65,23 @@ static image load_image_stb(char *filename, int channels)
 
 extern "C" {
 	YOLODLL_API void initDetector(const char *cfg, int cfgSize, const char *weights, int weightsSize);
-	YOLODLL_API void closeDetector();
-	YOLODLL_API void detectFrame(unsigned int width, unsigned int height, unsigned char *imgData, float thresh,
+	YOLODLL_API void unInitDetector();
+	YOLODLL_API void detectObjects(unsigned int width, unsigned int height, unsigned char *imgData, float thresh,
 		intptr_t *hItems, bbox_t **itemsFound, int *itemCount);
 }
 
 static Detector *instance = NULL;
-YOLODLL_API void  initDetector(const char *cfg, int cfgSize, const char *weights, int weightsSize) {
+YOLODLL_API void initDetector(const char *cfg, int cfgSize, const char *weights, int weightsSize) {
 	std::string cfgPath(cfg, cfgSize);
 	std::string weightsPath(weights, weightsSize);
 	instance = new Detector(cfgPath, weightsPath);
 };
 
-YOLODLL_API void   closeDetector() {
+YOLODLL_API void unInitDetector() {
 	instance = NULL;
 };
 
-YOLODLL_API void  detectFrame(unsigned int width, unsigned int height, unsigned char *imgData, float thresh,
+YOLODLL_API void  detectObjects(unsigned int width, unsigned int height, unsigned char *imgData, float thresh,
 	intptr_t *hItems, bbox_t **itemsFound, int *itemCount) {
 	cv::Mat original = cv::Mat(width, height, CV_8UC4, imgData);
 	std::vector<bbox_t> detectOut = instance->detect(original, thresh);
@@ -205,7 +205,7 @@ YOLODLL_API std::vector<bbox_t> Detector::detect(image_t img, float thresh)
 #endif
 	//std::cout << "net.gpu_index = " << net.gpu_index << std::endl;
 
-	//float nms = .4;
+	float nms = .45;
 
 	image im;
 	im.c = img.c;
@@ -221,6 +221,7 @@ YOLODLL_API std::vector<bbox_t> Detector::detect(image_t img, float thresh)
 	network_predict(net, X);
 
 	get_region_boxes(l, 1, 1, thresh, detector_gpu.probs, detector_gpu.boxes, 0, 0);
+	if (nms) do_nms(detector_gpu.boxes, detector_gpu.probs, l.w*l.h*l.n, l.classes, nms);
 	//if (nms) do_nms_sort(detector_gpu.boxes, detector_gpu.probs, l.w*l.h*l.n, l.classes, nms);
 	//draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, names, alphabet, l.classes);
 
