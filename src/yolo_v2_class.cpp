@@ -205,7 +205,7 @@ YOLODLL_API std::vector<bbox_t> Detector::detect(image_t img, float thresh)
 #endif
 	//std::cout << "net.gpu_index = " << net.gpu_index << std::endl;
 
-	//float nms = .4;
+	float nms = .45;
 
 	image im;
 	im.c = img.c;
@@ -221,6 +221,7 @@ YOLODLL_API std::vector<bbox_t> Detector::detect(image_t img, float thresh)
 	network_predict(net, X);
 
 	get_region_boxes(l, 1, 1, thresh, detector_gpu.probs, detector_gpu.boxes, 0, 0);
+	if (nms) do_nms(detector_gpu.boxes, detector_gpu.probs, l.w*l.h*l.n, l.classes, nms);
 	//if (nms) do_nms_sort(detector_gpu.boxes, detector_gpu.probs, l.w*l.h*l.n, l.classes, nms);
 	//draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, names, alphabet, l.classes);
 
